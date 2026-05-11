@@ -5,3 +5,4 @@ __pycache__/
 cron.log
 latest.json
 .DS_Store
+PythonAnywhere.html
