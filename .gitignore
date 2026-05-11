@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.env
+cron.log
+latest.json
+.DS_Store

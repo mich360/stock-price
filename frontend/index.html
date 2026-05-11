@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>リアルタイム株価情報</title>
+
+  <!-- スマホ対応（重要） -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 見た目改善（簡易） -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    #stockPrices {
+      list-style: none;
+      padding: 0;
+    }
+
+    #stockPrices li {
+      background: #fff;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+
+  <!-- JS読み込み -->
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+  <h2>📡 リアルタイム株価情報</h2>
+
+  <ul id="stockPrices">
+    <li>最新株価を取得中...</li>
+  </ul>
+
+</body>
+</html>

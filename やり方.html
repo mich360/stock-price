@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Flask 環境構築手順</title>
+   <style>
+      body{margin: 20px;}
+   section{
+      border: 1px solid aquamarine;
+      background-color: antiquewhite;
+      max-width: 800px;
+   }
+      pre {
+         color: rgb(106, 23, 23);
+         font-size: 18px;
+      }
+   </style>
+   <meta name="description" content="HTML, CSS, JS, Perl, PHPのチュートリアルサイト">
+   <link rel="stylesheet" href="styles/shCore.css">
+   <link rel="stylesheet" href="styles/shThemeDefault.css">
+   <script src="scripts/shCore.js"></script>
+   <script src="scripts/shBrushPython.js"></script>
+   <script>
+       SyntaxHighlighter.config.clipboardSwf = 'scripts/clipboard.swf';
+       SyntaxHighlighter.all();
+   </script>
+</head>
+<body>
+   <div hidden><pre>表示不可視コンテンツ
+      
+926600d91bc14844abc48c299c14f61619999c3d
+
+export PYAW_TOKEN="926600d91bc14844abc48c299c14f61619999c3d"
+
+
+TOKEN="926600d91bc14844abc48c299c14f61619999c3d"
+
+curl -sS -X POST \
+-H "Authorization: Token $TOKEN" \
+-F "content=@latest.json" \
+"https://www.pythonanywhere.com/api/v0/user/naomi/files/path/home/naomi/latest.json"
+
+
+   </pre></div>
+   <h1>リアルタイム株価情報</h1>
+   <section>
+      <h3 style="color: hotpink;"> 🚀 起動方法（start.sh を使う）</h3>
+      <p>① ターミナルを開く</p>
+      <p>② stock-price フォルダへ移動</p>
+   <pre><code>
+      cd ~/projects/stock-price
+   </code></pre>
+   <p>③ 起動（←これだけ）</p>
+   <pre><code>
+     ./start.sh
+   </code></pre>
+   </section>
+   <h2>Python の WebフレームワークFlask実行する</h2>
+
+   <p>仮想環境（venv）が現在のディレクトリにない場合作成するコマンドです(設置済)</p>
+     <pre><code>python3 -m venv venv  </code></pre>
+
+     <P style="color: rgb(192, 32, 32);">正しい起動（2つのターミナルで同時起動）1.と2.</P>
+   <h3>✅ 1. Flaskサーバーが起動している（ポート5001）</h3>  
+    <P>ターミナルを起動して 以下を実行する</P>
+   <pre><code class="brush: bash">
+      cd ~/projects/stock-price/backend
+      source venv/bin/activate
+      python3 app.py
+   
+                              # Python仮想環境のセットアップ
+                              # Flaskサーバーを起動
+   </code></pre>
+   <h3>✅ 2. フロントエンドを起動（ポート8000）</h3>
+    <P>Flask! サーバーサーバー起動中にVSCの別ターミナルで、以下を実行するとうまくいく。</P>
+     <pre><code class="brush: bash">
+      
+      cd ~/projects/stock-price/frontend
+
+      python3 -m http.server 8000
+
+     </code></pre>
+   <h3>✅ 3. ブラウザで以下にアクセス</h3>  
+   <p><a href="http://localhost:8000/index.html" target="_blank">http://localhost:8000/index.html</a></p>
+  <h2>Flask! サーバーは正常に動作していますか</h2>
+   <h3>バックエンド(Flask)とフロントエンド（HTTPサーバ）を起動して確認できますアクセスURL</h3>
+   <p><a href="http://127.0.0.1:5001/" target="_blank">http://127.0.0.1:5001/</a>表示されたら起動してます</p>
+   <p>
+      <a href="http://127.0.0.1:5001/stocks/latest" target="_blank">http://127.0.0.1:5001/stocks/latest</a> にアクセスすると、
+      JSON形式の株価データが表示される（例）:
+   </p>
+   <pre><code class="brush: json">
+      {
+         "date": "2025-03-07",
+         "stock_price": 7890
+      }
+   </code></pre>
+     
+   <h2>リアルタイム日立株価</h2>
+   <p>script.jsで5秒ごとに株価を更新する関数を設定しました</p>
+   <pre><code class="brush: bash">
+      # HTTPサーバーを起動
+     cd ~/projects/stock-price/frontend
+      python3 -m http.server 8000
+   </code></pre>
+
+   <h3>アクセスURL</h3>
+   <P>Flask! サーバーサーバー起動中に別ターミナルで実行するとうまくいく。</P>
+   <p><a href="http://localhost:8000/index.html" target="_blank">http://localhost:8000/index.html</a></p>
+   <h3>🌐 プログラム全体の構造</h3>
+   <pre><code class="brush: bash">
+      リアルタイム株価取得システム
+               ├── backend/                # バックエンド (Python + Flask)
+               │   ├── app.py              # 株価APIのメインスクリプト
+               │   ├── requirements.txt    # 依存関係 (Flask, yfinance)
+               │   ├── venv/               # 仮想環境（任意）
+               │   └── static/             # 静的ファイル（必要ならCSS, JSを格納）
+               │
+               └── frontend/               # フロントエンド (HTML + JavaScript)
+                  ├── index.html          # クライアントのWebページ
+                  ├── script.js           # JavaScript (Ajax通信)
+                  └── styles.css          # CSS（必要なら）
+   </code></pre>
+   <h2>リアルタイム株価情報</h2>
+  <ul id="stockPrices">
+    <li>最新株価を取得中...</li>
+  </ul>
+
+  <h3>📘 起動手順</h3>
+  <ol>
+    <li><strong>ターミナルAでバックエンド（Flask）を起動:</strong>
+      <pre><code> cd ~/projects/stock-price
+         source venv/bin/activate
+         cd backend
+         python app.py</code></pre>
+    </li>
+    <li><strong>ターミナルBでフロントエンド（HTTPサーバ）を起動:</strong>
+      <pre><code>cd ~/projects/stock-price
+          source venv/bin/activate
+          cd frontend
+          python3 -m http.server 8000</code></pre>
+    </li>
+    <li><strong>ブラウザでアクセス:</strong>
+      <pre><code>http://localhost:8000/index.html</code></pre>
+    </li>
+  </ol>
+   <section id="about">
+      <h2>PythonのFlask環境構築手順（Mac）</h2>
+      <p>Flaskを使うための環境を構築する手順を 仮想環境（venv）を利用する方法 で説明します。</p>
+      <pre><code class="brush: python">
+         # Pythonのバージョン確認
+         python3 --version
+
+         # プロジェクト用のディレクトリを作成（例: my_project）
+         mkdir my_project && cd my_project
+
+         # 仮想環境の作成（venv は好きな名前に変更可能）
+         python3 -m venv venv
+
+         # 仮想環境を有効化
+         source venv/bin/activate
+
+         # 仮想環境の無効化（終了）
+         deactivate
+
+         # Flaskをインストール
+         pip install flask
+
+         # Flaskのバージョン確認
+         python -m flask --version
+
+         # Flaskアプリの作成
+         touch app.py
+
+         # app.py に以下のコードを記述
+         from flask import Flask
+
+         app = Flask(__name__)
+
+         @app.route("/")
+         def home():
+             return "Hello, Flask!"
+
+         if __name__ == "__main__":
+             app.run(debug=True)
+
+         # Flaskを起動する前に、環境変数を設定
+         export FLASK_APP=app.py
+         export FLASK_ENV=development  # デバッグモードを有効化
+
+         # Flaskアプリの起動
+         flask run  # Running on http://127.0.0.1:5000/
+
+         # 必要なパッケージを追加 (任意)
+         pip install flask-sqlalchemy flask-wtf flask-login
+
+         # 依存関係を記録・再現
+         pip freeze > requirements.txt
+         pip install -r requirements.txt
+
+         # プロジェクトのフォルダ構成（推奨）
+         my_project/
+         ├── venv/               # 仮想環境
+         ├── app/
+         │   ├── __init__.py     # アプリの初期化
+         │   ├── routes.py       # ルーティング
+         │   ├── templates/      # HTMLテンプレート
+         │   ├── static/         # CSS, JS, 画像
+         ├── app.py              # メインのエントリーポイント
+         ├── requirements.txt    # 必要なパッケージ
+         ├── run.py              # アプリの起動用スクリプト
+      </code></pre>
+   </section>
+  
+
+
+   <section id="services">
+      <h2>Python の __init__.py（イニットパイ）役割</h2>
+      <h3>Django の場合</h3>
+      <ul>
+          <li>パッケージの識別</li>
+                  <small>myproject/ や myapp/ をパッケージとして扱うために __init__.py を配置する。</small>
+          <li>初期化処理</li>
+               <small>__init__.py にコードを書けば、パッケージがインポートされたときに実行されます。
+                  <pre><code class="brush: python">
+                         # mypackage/__init__.py
+                  print("mypackage が読み込まれました")
+               
+                  import mypackage
+                         # 実行結果: mypackage が読み込まれました</small>
+
+               </code></pre>
+          <li>モジュールのエクスポート</li>
+                    <small>__init__.py に __all__ を定義すると、from package import * でインポートできるモジュールを制御できる</small>
+                   <pre><code>
+       ディレクトリ構造
+
+         mypackage/
+         │── __init__.py
+         │── module1.py
+         │── module2.py
+         mypackage/__init__.py
+
+         #mypackage/__init__.py
+            print("mypackage が読み込まれました！")
+         #Pythonコード
+
+
+       import mypackage
+
+→ 実行すると mypackage が読み込まれました！ と表示される。
+                   </code></pre>
+
+          <li>結論：</li>
+          <ul>
+            <li>Python プロジェクトに必須ではない（Python 3.3 以降）。</li>
+            <li>ただし、明示的なパッケージ管理 や サブパッケージを扱う 場合は __init__.py を入れたほうがよい。</li>
+            <li>チーム開発や整理されたプロジェクトでは、__init__.py を使うのが一般的。</li>
+         </ul>
+      </ul>
+      <p>✅ __init__.py を置くと、そのフォルダは「Python のパッケージ」として認識される<br>
+         ❌ __init__.py を置いても、それ自体が「Python プロジェクト」として認識されるわけではない<br>
+         ✅ パッケージ化すると、import してモジュールを管理しやすくなる<br>
+         
+         つまり、「Python プロジェクト全体を定義するものではなく、あくまでその部分を「パッケージ」として認識させるためのファイル」 </p>
+
+         <hr>
+<h3>Flask の場合</h3>
+Flask は Django ほど厳格なディレクトリ構造を要求しませんが、大規模なプロジェクトでは __init__.py を使って アプリのファクトリー関数 を定義します。
+
+Flask プロジェクト構造（例）
+<pre><code class="brush: python">
+      flask_project/
+         │── myapp/
+         │   ├── __init__.py   # Flask アプリの初期化
+         │   ├── routes.py
+         │   ├── models.py
+         │   ├── static/
+         │   ├── templates/
+         │── run.py            # アプリを実行するスクリプト
+
+</code></pre>
+<h3>Flask における __init__.py の役割</h3>
+アプリケーションの初期化（アプリファクトリー）
+
+__init__.py に Flask アプリを作成する処理を記述し、他のモジュールと連携できるようにする。
+<pre><code class="brush: python">
+         # myapp/__init__.py
+         from flask import Flask
+
+         def create_app():
+            app = Flask(__name__)
+            app.config.from_object('config.Config')  # 設定を読み込む
+
+            # ルートを登録
+            from .routes import main
+            app.register_blueprint(main)
+
+            return app
+
+   </code></pre>
+これにより、run.py から create_app() を呼び出してアプリを作成できる。
+<h3>Blueprint（ブループリント）を登録</h3>
+
+
+Flask では機能を分割するために Blueprint を使うことが多い。
+例えば routes.py にルートを定義し、それを __init__.py で登録する。
+<pre><code class="brush: python">
+
+# myapp/routes.py
+from flask import Blueprint
+
+main = Blueprint('main', __name__)
+
+@main.route('/')
+def home():
+    return "Hello, Flask!"
+   -~~~~~
+# myapp/__init__.py
+from flask import Flask
+
+def create_app():
+    app = Flask(__name__)
+
+    from .routes import main
+    app.register_blueprint(main)
+
+    return app
+
+   </code></pre>
+<h4>結論</h4>
+<pre>
+フレームワーク	__init__.py の主な役割
+Django	プロジェクトやアプリを パッケージ化 し、必要に応じてアプリ設定を定義
+
+Flask	アプリファクトリー を作成し、アプリの初期化や Blueprint を登録
+
+小規模な Django / Flask プロジェクトでは __init__.py に何も書かないこともありますが、
+パッケージとして認識させるために必要 なので、必ず配置するのが一般的です。
+</pre>
+
+
+
+
+
+
+
+  </section>
+</body>
+</html>
